@@ -6,6 +6,7 @@ import {
 } from '../../App.constants';
 import { flipPlayer, hasWon } from './Gameboard.utils';
 import Cell from '../Cell';
+import PropertyControlledComponent from '../PropertyControlledComponent';
 
 export default function Gameboard() {
   const [gameboardState, setGameboardState] = useState({
@@ -27,28 +28,44 @@ export default function Gameboard() {
       winner: hasWon(newBoard) ? player : EMPTY_STRING,
     });
   };
-  const { board, winner, player } = gameboardState;
+  const {
+    board, movesCount, winner, player,
+  } = gameboardState;
 
   return (
     <div>
       <div>
-        <h3 className="player-turn-info">
-          Player
-          {' '}
-          <span>{player}</span>
-          &apos;s turn
-        </h3>
+        <PropertyControlledComponent shouldShow={Boolean(!winner && movesCount < 9)}>
+          <p className="gameboard-info">
+            Player
+            {' '}
+            <span>{player}</span>
+            &apos;s turn
+          </p>
+        </PropertyControlledComponent>
+        <PropertyControlledComponent shouldShow={Boolean(winner)}>
+          <p className="gameboard-info">
+            Player
+            {' '}
+            <span>{winner}</span>
+            {' '}
+            has won!
+          </p>
+        </PropertyControlledComponent>
+        <PropertyControlledComponent shouldShow={Boolean(!winner && movesCount === 9)}>
+          <p className="gameboard-info">It&apos;s a Tie!</p>
+        </PropertyControlledComponent>
       </div>
       <div className="gameboard">
         {
-        board.map((text, idx) => (
-          <Cell
-            text={text}
-            key={idx}
-            onClick={winner ? undefined : () => onCellClickHandler(idx)}
-          />
-        ))
-      }
+          board.map((text, idx) => (
+            <Cell
+              text={text}
+              key={idx}
+              onClick={winner ? undefined : () => onCellClickHandler(idx)}
+            />
+          ))
+        }
       </div>
     </div>
   );
