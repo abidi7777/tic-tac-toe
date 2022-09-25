@@ -1,60 +1,34 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState } from 'react';
+import React from 'react';
+import cx from 'classnames';
 
-import {
-  GRID_SIZE, EMPTY_STRING, PLAYER_X, PLAYER_O,
-} from '../../App.constants';
-import { flipPlayer, hasWon } from './Gameboard.utils';
+import { GRID_SIZE } from '../../App.constants';
 import Cell from '../Cell';
+import GameOverPopup from '../GameOverPopup';
 import PropertyControlledComponent from '../PropertyControlledComponent';
+import useGameboard from './useGameboard';
 
 export default function Gameboard() {
-  const [gameboardState, setGameboardState] = useState({
-    board: Array(GRID_SIZE).fill(EMPTY_STRING),
-    player: Math.random() > 0.5 ? PLAYER_X : PLAYER_O,
-    movesCount: 0,
-    winner: EMPTY_STRING,
-  });
-  const onCellClickHandler = (cellIdx) => {
-    const { board, player, movesCount } = gameboardState;
-    const newBoard = board.slice();
-    newBoard[cellIdx] = player;
-
-    setGameboardState({
-      ...gameboardState,
-      board: newBoard,
-      player: flipPlayer(player),
-      movesCount: movesCount + 1,
-      winner: hasWon(newBoard) ? player : EMPTY_STRING,
-    });
-  };
+  const { gameboardState, resetGame, onCellClickHandler } = useGameboard();
   const {
     board, movesCount, winner, player,
   } = gameboardState;
 
   return (
     <div>
-      <div>
-        <PropertyControlledComponent shouldShow={Boolean(!winner && movesCount < 9)}>
-          <p className="gameboard-info">
-            Player
-            {' '}
-            <span>{player}</span>
-            &apos;s turn
-          </p>
-        </PropertyControlledComponent>
-        <PropertyControlledComponent shouldShow={Boolean(winner)}>
-          <p className="gameboard-info">
-            Player
-            {' '}
-            <span>{winner}</span>
-            {' '}
-            has won!
-          </p>
-        </PropertyControlledComponent>
-        <PropertyControlledComponent shouldShow={Boolean(!winner && movesCount === 9)}>
-          <p className="gameboard-info">It&apos;s a Tie!</p>
-        </PropertyControlledComponent>
+      <div className="gameboard-info">
+        <div
+          className={cx(
+            'player-turn-info',
+            {
+              visible: !winner && movesCount < GRID_SIZE,
+              invisible: winner || movesCount === GRID_SIZE,
+            },
+          )}
+        >
+          <h3 className={player === 'X' ? 'underline' : ''}>X</h3>
+          <h3 className={player === 'O' ? 'underline' : ''}>O</h3>
+        </div>
       </div>
       <div className="gameboard">
         {
@@ -62,10 +36,23 @@ export default function Gameboard() {
             <Cell
               text={text}
               key={idx}
-              onClick={winner ? undefined : () => onCellClickHandler(idx)}
+              onClick={
+                (winner || movesCount === GRID_SIZE)
+                  ? undefined
+                  : () => onCellClickHandler(idx)
+              }
             />
           ))
         }
+        <PropertyControlledComponent shouldShow={Boolean(winner)}>
+          <GameOverPopup text={`Player ${winner} has won!`} />
+        </PropertyControlledComponent>
+        <PropertyControlledComponent shouldShow={Boolean(!winner && movesCount === GRID_SIZE)}>
+          <GameOverPopup text="It&apos;s a Tie!" />
+        </PropertyControlledComponent>
+      </div>
+      <div className="reset-btn-wrapper">
+        <button type="button" id="reset-btn" onClick={resetGame}>Reset Game</button>
       </div>
     </div>
   );

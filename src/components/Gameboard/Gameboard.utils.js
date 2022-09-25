@@ -1,4 +1,6 @@
-import { PLAYER_X, PLAYER_O } from '../../App.constants';
+import {
+  EMPTY_STRING, GRID_SIZE, PLAYER_X, PLAYER_O,
+} from '../../App.constants';
 
 export const flipPlayer = (text) => (text === PLAYER_X ? PLAYER_O : PLAYER_X);
 
@@ -24,3 +26,10 @@ export const hasWon = (board) => {
 
   return false;
 };
+
+export const getInitialState = () => ({
+  board: Array(GRID_SIZE).fill(EMPTY_STRING),
+  player: Math.random() > 0.5 ? PLAYER_X : PLAYER_O,
+  movesCount: 0,
+  winner: EMPTY_STRING,
+});
