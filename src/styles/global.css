@@ -82,7 +82,8 @@ body {
   visibility: hidden;
 }
 
-.underline {
+.current-player {
+  color: red;
   text-decoration: underline;
 }
 
@@ -99,15 +100,17 @@ body {
   cursor: pointer;
   color: #777;
   transition: color 0.5s ease;
-  font-size: 1rem;
-}
-
-#reset-btn:hover {
-  color: red;
+  font-size: 3rem;
 }
 
 .reset-btn-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (hover: hover) {
+  #reset-btn:hover {
+    color: red;
+  }
 }

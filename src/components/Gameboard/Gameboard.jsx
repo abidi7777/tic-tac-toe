@@ -2,7 +2,7 @@
 import React from 'react';
 import cx from 'classnames';
 
-import { GRID_SIZE } from '../../App.constants';
+import { GRID_SIZE, PLAYER_O, PLAYER_X } from '../../App.constants';
 import Cell from '../Cell';
 import GameOverPopup from '../GameOverPopup';
 import PropertyControlledComponent from '../PropertyControlledComponent';
@@ -26,8 +26,8 @@ export default function Gameboard() {
             },
           )}
         >
-          <h3 className={player === 'X' ? 'underline' : ''}>X</h3>
-          <h3 className={player === 'O' ? 'underline' : ''}>O</h3>
+          <h3 className={player === PLAYER_X ? 'current-player' : ''}>X</h3>
+          <h3 className={player === PLAYER_O ? 'current-player' : ''}>O</h3>
         </div>
       </div>
       <div className="gameboard">
@@ -52,7 +52,7 @@ export default function Gameboard() {
         </PropertyControlledComponent>
       </div>
       <div className="reset-btn-wrapper">
-        <button type="button" id="reset-btn" onClick={resetGame}>Reset Game</button>
+        <button type="button" id="reset-btn" onClick={resetGame} title="Reset game">↻</button>
       </div>
     </div>
   );
